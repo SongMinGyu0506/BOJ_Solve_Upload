@@ -1,25 +1,40 @@
 class Solution {
-    public static void change(int start, int end, int[] answer) {
-        if(end-1-start < answer[1]-answer[0]) {
-            answer[0] = start;
-            answer[1] = end-1;
-        }
-    }
-    public int[] solution(int[] sequence, int k) {
-        int[] answer = new int[]{0,sequence.length-1};
-        int start = 0;
-        int end = 1;
+public int[] solution(int[] sequence, int k) {
+        int[] answer = {Integer.MAX_VALUE,Integer.MAX_VALUE};
+        int len = Integer.MAX_VALUE;
+        
+        int left = 0;
+        int right = 0;
+        
         int sum = sequence[0];
-        while(start < end) {
+        while(left <= right && right < sequence.length) {
             if(sum == k) {
-                change(start,end,answer);
-                sum -= sequence[start++];
-            } else if (sum > k) {
-                sum -= sequence[start++];
-            } else if (end < sequence.length) {
-                sum += sequence[end++];
+            	if(right-left <= len) {
+            		if(right-left < len) {
+            			len = right-left;
+            			answer[0] = left;
+            			answer[1] = right;
+            		} else {
+            			if(answer[0] > left && answer[1] > right) {
+            				len = right-left;
+            				answer[0] = left;
+            				answer[1] = right;
+            			}
+            		}
+            	}
+                sum -= sequence[left];
+                left++;
+                continue;
+            }
+            if(sum > k) {
+                sum -= sequence[left];
+                left++;
+            } else if(right+1 < sequence.length && sum < k) {
+            	right++;
+            	sum += sequence[right];
             } else {
-                break;
+            	sum -= sequence[left];
+            	left++;
             }
         }
         return answer;
